@@ -23,6 +23,19 @@ resource "aws_instance" "dev" {
   vpc_security_group_ids = ["${aws_security_group.ssh-access.id}"]
 }
 
+resource "aws_instance" "dev-4" {
+  ami           = "ami-02e136e904f3da870"
+  instance_type = "t2.micro"
+  key_name      = "terraform-aws-key"
+  tags = {
+    "Name" = "dev-4"
+  }
+  vpc_security_group_ids = ["${aws_security_group.ssh-access.id}"]
+  depends_on = [
+    aws_s3_bucket.dev-4
+  ]
+}
+
 resource "aws_security_group" "ssh-access" {
   name        = "ssh-access"
   description = "Allow SSH inbound traffic"
@@ -40,12 +53,11 @@ resource "aws_security_group" "ssh-access" {
   }
 }
 
-resource "aws_s3_bucket" "dev-bucket" {
-  bucket = "my-tf-test-bucket"
+resource "aws_s3_bucket" "dev-4" {
+  bucket = "dev4-test-bucket"
   acl    = "private"
 
   tags = {
-    Name        = "Dev bucket"
-    Environment = "Dev"
+    Name = "dev4-test-bucket"
   }
 }
